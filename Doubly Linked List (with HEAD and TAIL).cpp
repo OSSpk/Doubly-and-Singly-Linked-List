@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 
-
 /*-------------------------List Item-------------------------*/
 template <class T>
 struct ListItem
@@ -10,7 +9,7 @@ struct ListItem
     ListItem<T> * next;     //Pointer to the next item of the List
     ListItem<T> * previous; //Pointer to the previous item of the list
 
-    T getValue()
+    T& getValue()           //I know the encapsulation is being violated here :/
     {
         return value;
     }
@@ -210,74 +209,76 @@ public:
 
     ListItem<T>* insertSorted(T& item)
     {
-        ListItem<T> * temp = new ListItem<T>;
-        temp -> value = item;
 
-        if (head == NULL)       //If the list is empty
-        {
-            temp -> previous = temp -> next = NULL;
-            head = tail = temp;
-        }
+            ListItem<T> * temp = new ListItem<T>;
+            temp -> value = item;
 
-        else                    //List isn't empty
-        {
-            ListItem<T> * current = head;
-
-
-            while(current -> next != NULL && current -> value < item)
+            if (head == NULL)       //If the list is empty
             {
-                current = current -> next;
+                temp -> previous = temp -> next = NULL;
+                head = tail = temp;
             }
 
-
-            if (current == head)
+            else                    //List isn't empty
             {
-                if (temp -> value > current -> value)
+                ListItem<T> * current = head;
+
+
+                while(current -> next != NULL && current -> value < item)
                 {
-                    temp -> previous = current;
-                    temp -> next = current -> next;
-
-                    if (current -> next = NULL)
-                        tail = temp;
-
-                    current -> next = temp;
+                    current = current -> next;
                 }
+
+
+                if (current == head)
+                {
+                    if (temp -> value > current -> value)
+                    {
+                        temp -> previous = current;
+                        temp -> next = current -> next;
+
+                        if (current -> next = NULL)
+                            tail = temp;
+
+                        current -> next = temp;
+                    }
+
+                    else
+                    {
+                        temp -> previous = NULL;
+                        temp -> next     = current;
+                        current -> previous = temp;
+                        head = temp;
+                    }
+                }
+
 
                 else
                 {
-                    temp -> previous = NULL;
-                    temp -> next     = current;
-                    current -> previous = temp;
-                    head = temp;
+                    if (temp -> value > current -> value)
+                    {
+                        temp -> next     = NULL;
+                        temp -> previous = current;
+
+                        current -> next  = temp;
+                        tail =  temp;
+                    }
+
+                    else
+                    {
+                        temp -> previous = current -> previous;
+                        temp -> next = current;
+
+                        current -> previous -> next = temp;
+                        current -> previous = temp;
+                    }
                 }
             }
-
-
-            else
-            {
-                if (temp -> value > current -> value)
-                {
-                    temp -> next     = NULL;
-                    temp -> previous = current;
-
-                    current -> next  = temp;
-                    tail =  temp;
-                }
-
-                else
-                {
-                    temp -> previous = current -> previous;
-                    temp -> next = current;
-
-                    current -> previous -> next = temp;
-                    current -> previous = temp;
-                }
-            }
-
-        }
 
         return temp;
     }
+
+
 
 
 
@@ -297,7 +298,7 @@ public:
 
 
 
-    ListItem<T> *searchFor(T item)
+    ListItem<T> *searchForL(T item)
     {
         if(head == NULL)                //If the list is empty
         {
@@ -326,6 +327,9 @@ public:
             return NULL;
         }
     }
+
+
+
 
 
 
@@ -408,7 +412,6 @@ public:
     }
 
 
-
     //Deletes a particular node if given the node's address
     void deleteNode(ListItem<T> * node)
     {
@@ -441,6 +444,7 @@ public:
     }
 
 
+
     /*------------------- Utility Functions -------------------*/
     int length()
     {
@@ -464,7 +468,7 @@ public:
         {
             ListItem<T> * current = head;
 
-            cout << endl << "The list contains: " << endl;
+            // cout << endl << "The list contains: " << endl;
 
             while ( current != NULL)
             {
@@ -532,6 +536,7 @@ public:
 
 
 
+
 void driver()
 {
     List<int> list1;
@@ -589,7 +594,7 @@ void driver()
             cout << "\nEnter the data element which is to be searched : ";
             cin  >> data;
 
-            if(list1.searchFor(data) != NULL)
+            if(list1.searchForL(data) != NULL)
                 cout << "\nThe element is found. ";
             else
                 cout << "\nThe element is not found. ";
